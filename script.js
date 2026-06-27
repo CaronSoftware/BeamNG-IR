@@ -1,25 +1,33 @@
-// Add a subtle "mechanical jitter" effect to the hero content
-// This simulates the vibration of a car engine
-const heroContent = document.querySelector('.hero-content');
+// Glass Tilt Effect for Cards
+const cards = document.querySelectorAll('.glass-panel');
 
 document.addEventListener('mousemove', (e) => {
-    let xAxis = (window.innerWidth / 2 - e.pageX) / 50;
-    let yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+    const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
+    const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
     
-    heroContent.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    // Apply a subtle parallax to the background grid
+    document.querySelector('.grid-overlay').style.transform = `translate(${xAxis}px, ${yAxis}px)`;
 });
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+// Add interactive tilt to cards
+cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left; // x position within the element
+        const y = e.clientY - rect.top;  // y position within the element
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
     });
 });
 
-// Log "System Check" to console (just for the aesthetic)
-console.log("%c BEAM_NG_IR SYSTEM BOOTED ", "background: #00f2ff; color: #000; font-weight: bold;");
-console.log("Status: Physics Engine Loaded...");
-console.log("Status: Soft-body simulation ready.");
+console.log("BEAM_NG_IR Interface: Glass Mode Enabled.");
